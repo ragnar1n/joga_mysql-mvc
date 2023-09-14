@@ -1,26 +1,41 @@
-const con=require('../utils/db')
+const Article=require('../models/article.model.js')
+
 
 const getAllArticles = (req, res) => {
-    let sql = "select*from article";
-    let articles = []
-    con.query(sql, (err, result) => {
-        if (err) throw err;
-        articles = result
-        res.render('index', {
-            articles: articles
-        })
+    Article.getAll((err, data)=>{
+        if (err){
+            res.status(500).send({
+                message:err.message||'An error occurred while retrieving articles'
+            })
+        }else {
+            console.log(data)
+            res.render('index',{
+                articles:data
+            })
+        }
     })
 }
 const getArticleBySlug=(req,res)=>{
-    let sql=`SELECT *, article.name article_name, author.name author_name from article inner join author on author.id=article.author_id where slug="${req.params.slug}"`
-    let article
-    con.query(sql,(err,result)=>{
-        if (err) throw err;
-        article=result
-        res.render('article',{
-            article:result
-        })
+    Article.getBySlug(req.params.slug,(err,data)=>{
+        if (err){
+            res.status(500).send({
+                message:err.message||'An error occurred while retrieving articles'
+            })
+        }else {
+            console.log(data)
+            res.render('article',{
+                article:data
+            })
+        }
     })
+    // let article
+    // con.query(query,(err,result)=>{
+    //     if (err) throw err;
+    //     article=result
+    //     res.render('article',{
+    //         article:result
+    //     })
+    // })
 }
 module.exports={
     getAllArticles,
