@@ -28,14 +28,6 @@ const getArticleBySlug=(req,res)=>{
             })
         }
     })
-    // let article
-    // con.query(query,(err,result)=>{
-    //     if (err) throw err;
-    //     article=result
-    //     res.render('article',{
-    //         article:result
-    //     })
-    // })
 }
 module.exports={
     getAllArticles,
