@@ -51,12 +51,71 @@ Article.createNew=(newArticle,result)=>{
                     author_id='${newArticle.author_id}'`
     con.query(query,(err,res)=>{
         if (err){
-            console.log('error: '+err)
+            console.log('error: ',err)
             result(err,null)
             return
         }
         console.log('created article: ',{id:res.insertId, ...newArticle})
         result(null,{id:res.insertId, ...newArticle})
+    })
+}
+
+Article.showArticle = (articleId, result) => {
+    let articleQuery = `select*from article WHERE id = "${articleId}"`
+    let authorQuery = 'select*from author'
+    let article
+    let authors = []
+
+    con.query(articleQuery, (err,res) => {
+        if (err) {
+            console.log('error: ',err)
+            result(err,null)
+            return
+        }
+        article=res
+        console.log('article: ',article)
+
+        con.query(authorQuery, (err,res) => {
+            if (err) {
+                console.log('error: ',err)
+                result(err,null)
+                return
+            }
+            authors=res
+            console.log('authors: ',authors)
+            result(null, article,authors)
+        })
+    })
+}
+
+Article.update=(articleId,updatedArticle,result)=>{
+    let query=`update article set
+        name="${updatedArticle.name}",
+        slug="${updatedArticle.slug}",
+        image="${updatedArticle.image}",
+        body="${updatedArticle.body}",
+        author_id="${updatedArticle.author_id}"
+        where id=${articleId}`
+    con.query(query,(err,res)=>{
+        if (err){
+            console.log('error ',err)
+            result (err,null)
+            return
+        }
+        console.log('updated article: ',{id:res.insertId,...updatedArticle})
+        result(null,{id:res.insertId,...updatedArticle})
+    })
+}
+Article.delete=(articleId,result)=>{
+    let query=`delete from article where id="${articleId}"`
+    con.query(query,(err,res)=>{
+        if (err){
+            console.log('error ',err)
+            result (err,null)
+            return
+        }
+        console.log('deleted article: ',res.insertId)
+        result(null,{id:res.insertId})
     })
 }
 
